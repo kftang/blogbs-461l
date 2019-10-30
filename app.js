@@ -13,15 +13,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 // Setup firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDC34NWdWHh5pFJwV731aS1AOJok0kV11Q",
-  authDomain: "blogbs-461l.firebaseapp.com",
-  databaseURL: "https://blogbs-461l.firebaseio.com",
-  projectId: "blogbs-461l",
-  storageBucket: "blogbs-461l.appspot.com",
-  messagingSenderId: "850995431128",
-  appId: "1:850995431128:web:1ef5ccbe07c3356d8c39ad"
-};
+const firebaseConfig = JSON.parse(process.env.FIREBASE_API_KEY);
 
 firebase.initializeApp(firebaseConfig);
 const provider = new firebase.auth.GoogleAuthProvider();

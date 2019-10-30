@@ -1,0 +1,7 @@
+indexes:
+- kind: blogposts
+  properties:
+  - name: id
+    direction: asc
+  - name: date
+    direction: desc

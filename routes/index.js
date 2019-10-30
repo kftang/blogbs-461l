@@ -7,9 +7,12 @@ const datastore = new Datastore();
 /* GET home page. */
 router.get('/', async (req, res) => {
   const { user } = req;
-  const query = datastore.createQuery('blogposts').order('date').limit(3);
+  const query = datastore.createQuery('blogposts');
   const queryResponse = await datastore.runQuery(query);
-  const [blogPosts] = queryResponse;
+  const [allBlogPosts] = queryResponse;
+  allBlogPosts.sort((a, b) => b.date - a.date);
+
+  const blogPosts = allBlogPosts.slice(0, 3);
   res.render('index', { blogPosts, user });
 });
 
