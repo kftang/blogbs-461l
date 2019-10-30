@@ -13,7 +13,7 @@ h1 {
 
 .landing {
   display: block;
-  background: url("../img/landing-bg.jpg");
+  background: url("/img/landing-bg.jpg");
   width: 100%;
   height: 800px;
   overflow: hidden;
