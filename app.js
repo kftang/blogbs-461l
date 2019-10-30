@@ -1,13 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const sgMail = require('@sendgrid/mail');
+const firebase = require('firebase');
+require('firebase/auth');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const authMiddleware = require('./auth');
+const blogPostsRouter = require('./routes/blogPosts');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
-var app = express();
+// Setup firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDC34NWdWHh5pFJwV731aS1AOJok0kV11Q",
+  authDomain: "blogbs-461l.firebaseapp.com",
+  databaseURL: "https://blogbs-461l.firebaseio.com",
+  projectId: "blogbs-461l",
+  storageBucket: "blogbs-461l.appspot.com",
+  messagingSenderId: "850995431128",
+  appId: "1:850995431128:web:1ef5ccbe07c3356d8c39ad"
+};
+
+firebase.initializeApp(firebaseConfig);
+const provider = new firebase.auth.GoogleAuthProvider();
+
+// Setup sendgrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,8 +41,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(authMiddleware);
+app.use((req, res, next) => {
+  req.sgMail = sgMail;
+  next();
+});
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/blogposts', blogPostsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
