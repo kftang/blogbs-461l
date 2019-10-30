@@ -26,14 +26,15 @@ router.get('/send', (req, res, next) => {
   const current = new Date();
   const today = new Date(current.getFullYear(), current.getMonth(), current.getDate());
 
-  const blogPostsQuery = datastore.createQuery('blogposts').filter('date', '>', today.valueOf()).limit(3);
-  const [blogPosts] = await datastore.runQuery(blogPostsQuery);
+  const blogPostsQuery = datastore.createQuery('blogposts');
+  const [allBlogPosts] = await datastore.runQuery(blogPostsQuery);
+  const blogPosts = allBlogPosts.filter(blogPost => blogPost.date > today).slice(0, 3);
 
   const posts = blogPosts.map(blogPost => ({
     title: blogPost.title,
     author: blogPost.author,
     content: blogPost.content,
-    url: `/blogposts/`,
+    url: '/blogposts/0',
   }));
   sgMail.send({
     to: emails,
