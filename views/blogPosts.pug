@@ -1,0 +1,16 @@
+extends layout
+
+block landing
+  div.landing
+    h1 BlogBS - 461L
+
+block content
+  div.posts
+    each post in blogPosts
+      div.post
+        h2= post.title
+        h4= `Written by ${post.author}`
+        p= post.content
+  span.pages
+    a(href=`blogposts/${lastPage}`) Previous Page
+    a(href=`blogposts/${nextPage}`) Next Page

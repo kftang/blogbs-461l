@@ -1,14 +1,22 @@
 extends layout
 
 block landing
-  div(class='landing')
+  div.landing
     h1 BlogBS - 461L
-  //- img#landing(src='img/landing-bg.jpg')
 
 block content
-  p Welcome to #{title}
-  h3 By: Kenny and 
-  
-
-    
-    
+  div.content
+    p Welcome to BlogBS
+    h3 By: Kenny and Waseem
+    div.posts
+      each post in blogPosts
+        div.post
+          h2= post.title
+          h4= `Written by ${post.author}`
+          p= post.content
+    a(href='blogposts/0') View More Posts
+    div.addPost
+      form(onsubmit="onsubmit", action="/blogposts", method="POST")
+        input(type="text", name="title")
+        textarea(name="content", cols="30", rows="10")
+        input(type="hidden", name="id_token")

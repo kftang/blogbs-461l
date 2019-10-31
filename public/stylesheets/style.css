@@ -25,3 +25,9 @@ h1 {
   width: 50%;
   height: 50%;
 }
+
+div.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
