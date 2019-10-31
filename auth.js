@@ -7,6 +7,7 @@ async function authMiddleware(req, res, next) {
     const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
     const signInResponse = await firebase.auth().signInWithCredential(credential);
     req.user = signInResponse.user;
+    console.log(signInResponse);
   } catch (error) {
   }
   next()

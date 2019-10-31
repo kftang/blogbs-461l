@@ -31,3 +31,28 @@ div.content {
   flex-direction: column;
   align-items: center;
 }
+
+div.post {
+  border: 1px solid black;
+  margin: 1em;
+  padding: 1em;
+  min-width: 30vw;
+  max-width: 60vw;
+}
+
+div.addPost > form {
+  display: flex;
+  flex-direction: column;
+  min-width: 30vw;
+}
+
+div.addPost > form > * {
+  margin: .5em;
+  padding: .5em;
+}
+
+span.pages {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

@@ -2,7 +2,7 @@ doctype html
 html
   head
     title= title
-    link(type='text/css', rel='stylesheet', href='stylesheets/style.css')
+    link(type='text/css', rel='stylesheet', href='/stylesheets/style.css')
     link(type='text/css', rel='stylesheet', href='https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css')
     script(src='https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js')
     script(src='https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js')
@@ -10,5 +10,6 @@ html
     script(src='/js/auth.js')
   body
     div#firebaseui-auth-container
+    a.signout(onclick="logout()") Logout
     block landing
     block content

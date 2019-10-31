@@ -31,41 +31,25 @@ router.get('/:page', async (req, res) => {
   allBlogPosts.sort((a, b) => b.date - a.date);
 
   const blogPosts = allBlogPosts.slice(page * 10, page * 10 + 10);
-  res.render('blogPosts', { blogPosts, user, pages: numBlogPosts / 10 + 1 });
-});
-
-router.post('/debug', async (req, res) => {
-  const { body: { title, content, user } } = req;
-  if (!title || !content) {
-    res.status(400).send();
-    return;
-  }
-
-  const newBlogPost = new BlogPost(title, content, user);
-
-  const key = datastore.key(['blogposts', newBlogPost.id]);
-  const entity = {
-    key,
-    data: newBlogPost,
-  };
-
-  try {
-    await datastore.save(entity);
-    res.status(200).send();
-  } catch (error) {
-    res.status(409).send();
-  }
+  const pages = Math.floor(numBlogPosts / 10);
+  res.render('blogPosts', {
+    blogPosts,
+    user,
+    lastPage: page - 1 < 0 ? 0 : page - 1,
+    nextPage: +page + 1 >= pages ? pages : +page + 1,
+  });
 });
 
 router.post('/', async (req, res) => {
   const { body: { title, content }, user } = req;
   if (!title || !content) {
-    res.status(400).send();
+    res.redirect(400, '/');
     return;
   }
 
   if (!req.user) {
-    res.status(401).send();
+    res.redirect(401, '/');
+    return;
   }
   const newBlogPost = new BlogPost(title, content, user.displayName);
 
@@ -77,9 +61,11 @@ router.post('/', async (req, res) => {
 
   try {
     await datastore.save(entity);
-    res.status(200).send();
+    res.redirect('/');
+    return;
   } catch (error) {
-    res.status(409).send();
+    res.redirect(409, '/');
+    return;
   }
 });
 
