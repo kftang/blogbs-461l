@@ -12,8 +12,9 @@ class Subscriber {
   }
 }
 
-router.get('/send', (req, res, next) => {
-  if (!req.header['X-Appengine-Cron']) {
+router.get('/send', async (req, res, next) => {
+  if (!req.headers['x-appengine-cron']) {
+    console.log(req.headers);
     next();
     return;
   }
@@ -32,29 +33,41 @@ router.get('/send', (req, res, next) => {
 
   const posts = blogPosts.map(blogPost => ({
     title: blogPost.title,
-    author: blogPost.author,
+    author: blogPost.user,
     content: blogPost.content,
-    url: '/blogposts/0',
+    date: (new Date(blogPost.date)).toLocaleString(),
+    url: 'blogbs-461l.appspot.com/blogposts/0',
   }));
-  sgMail.send({
-    to: emails,
-    from: 'blogbs461l',
-    templateId: 'd-2e976458c8074eb2bc239966b7407b5b',
-    dynamic_template_data: {
-      posts,
-      date: (new Date()).toLocaleDateString(),
-    },
-  });
+  if (!posts.length) {
+    res.status(200).send();
+    return;
+  }
+  try {
+    const response = await sgMail.send({
+      to: emails,
+      from: 'blogbs461l@gmail.com',
+      templateId: 'd-2e976458c8074eb2bc239966b7407b5b',
+      dynamic_template_data: {
+        posts,
+        date: (new Date()).toLocaleDateString(),
+      },
+    });
+    res.status(200).send();
+  } catch (error) {
+    console.error(error);
+    console.error(error.response.body);
+    res.status(500).send();
+  }
 });
 
-router.post('/subscribe', (req, res) => {
+router.post('/subscribe', async (req, res) => {
   const { user } = req;
   if (!user) {
-    res.status(401).send();
+    res.redirect(401, '/');
     return;
   }
   const newSubscriber = new Subscriber(user.email, user.displayName);
-  const key = datastore.key(['subscriber', newSubscriber.email]);
+  const key = datastore.key(['subscribers', newSubscriber.email]);
   const entity = {
     key,
     data: newSubscriber,
@@ -62,25 +75,9 @@ router.post('/subscribe', (req, res) => {
 
   try {
     await datastore.save(entity);
-    res.status(200).send();
+    res.redirect('/');
   } catch (error) {
-    res.status(409).send();
-  }
-});
-
-router.post('/unsubscribe', (req, res) => {
-  const { user } = req;
-  if (!user) {
-    res.status(401).send();
-    return;
-  }
-  const key = datastore.key(['subscriber', user.email]);
-
-  try {
-    await datastore.delete(key);
-    res.status(200).send();
-  } catch (error) {
-    res.status(409).send();
+    res.redirect(409, '/');
   }
 });
 

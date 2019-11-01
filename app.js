@@ -10,7 +10,8 @@ require('firebase/auth');
 const authMiddleware = require('./auth');
 const blogPostsRouter = require('./routes/blogPosts');
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const logoutRouter = require('./routes/logout');
+const digestsRouter = require('./routes/digests');
 
 // Setup firebase
 const firebaseConfig = JSON.parse(process.env.FIREBASE_API_KEY);
@@ -39,7 +40,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/logout', logoutRouter);
+app.use('/digests', digestsRouter);
 app.use('/blogposts', blogPostsRouter);
 
 // catch 404 and forward to error handler
