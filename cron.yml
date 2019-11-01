@@ -1,0 +1,4 @@
+cron:
+- description: "Send digests"
+  url: "/digests/send"
+  schedule: every 24 hours
